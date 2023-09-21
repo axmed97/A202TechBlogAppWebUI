@@ -1,0 +1,9 @@
+﻿@model Tag
+<form method="post">
+    <div class="form-group">
+        <label asp-for="TagName"></label>
+        <input type="text" class="form-control" asp-for="TagName" />
+        <span asp-validation-for="TagName" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Create" class="btn btn-dark" />
+</form>

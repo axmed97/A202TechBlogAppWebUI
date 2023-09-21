@@ -1,0 +1,24 @@
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityRole>
+@{
+    int counter = 0;
+}
+
+<a href="/admin/role/create" class="btn btn-dark">Create</a>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Role Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            counter++;
+            <tr>
+                <td>@counter</td>
+                <td>@item.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
