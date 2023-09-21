@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using System.Reflection;
 using WebUI.Models;
 
 namespace WebUI.Data
@@ -17,8 +19,10 @@ namespace WebUI.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
             base.OnModelCreating(builder);
+
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
             builder.Entity<User>().ToTable("Users"); // AspNetUser
             builder.Entity<IdentityRole>().ToTable("Roles"); // AspNetRole
 
@@ -41,5 +45,5 @@ namespace WebUI.Data
                     TagName = "War"
                 });
         }
-    }
+    }   
 }

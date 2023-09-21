@@ -1,0 +1,10 @@
+﻿@model Tag
+
+
+<form method="post">
+    <div class="form-group">
+        <p>Are you sure to delete this Tag: @Model.TagName</p>
+    </div>
+    <input type="submit" class="btn btn-danger" value="Delete" />
+</form>
+<a href="/admin/tag" class="btn btn-dark">Cancel</a>

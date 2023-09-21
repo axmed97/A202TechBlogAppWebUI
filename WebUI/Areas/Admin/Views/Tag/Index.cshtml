@@ -16,8 +16,11 @@
                 <td>#</td>
                 <td>@item.TagName</td>
                 <td>
-                    <a href="#" class="btn btn-warning">Edit</a>
-                    <a href="#" class="btn btn-danger">Delte</a>
+                    <a href="/admin/tag/edit/@item.Id" class="btn btn-warning">Edit</a>
+                    @if(Model.Count > 1)
+                    {
+                        <a href="/admin/tag/delete/@item.Id" class="btn btn-danger">Delete</a>
+                    }
                 </td>
             </tr>
         }

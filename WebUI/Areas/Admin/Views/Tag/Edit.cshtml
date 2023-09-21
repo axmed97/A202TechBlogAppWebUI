@@ -1,0 +1,15 @@
+﻿@model Tag
+@{
+    if(ViewBag.Error != null)
+    {
+        <p class="alert alert-danger">@ViewBag.Error</p>   
+    }
+}
+<form method="post">
+    <div class="form-group">
+        <label asp-for="TagName"></label>
+        <input type="text" class="form-control" asp-for="TagName" />
+        <span asp-validation-for="TagName" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Update" class="btn btn-dark" />
+</form>
