@@ -27,6 +27,19 @@ namespace WebUI.Data
                     .WithMany(u => u.ArticleComments)
                     .HasForeignKey(ac => ac.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Tag>()
+                .HasData(
+                new Tag()
+                {
+                    Id = 1,
+                    TagName = "Life"
+                },
+                new Tag()
+                {
+                    Id = 2,
+                    TagName = "War"
+                });
         }
     }
 }
