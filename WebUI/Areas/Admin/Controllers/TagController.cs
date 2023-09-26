@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebUI.Data;
 using WebUI.Models;
 
 namespace WebUI.Areas.Admin.Controllers
 {
     [Area(nameof(Admin))]
+    [Authorize(Roles = "Admin, Admin Editor")]
     public class TagController : Controller
     {
         private readonly AppDbContext _context;
