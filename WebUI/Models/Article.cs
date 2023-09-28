@@ -7,6 +7,9 @@
         public string Content { get; set; }
         public string PhotoUrl { get; set; }
         public int ViewCount { get; set; }
+        public string SeoUrl { get; set; }
+        public bool Status { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }
@@ -14,7 +17,7 @@
         public string? UpdatedBy { get; set; }
         public string? DeletedBy { get; set; }
         public int CategoryId { get; set; }
-        public Category category { get; set; }
+        public Category Category { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public List<ArticleComment> ArticleComments { get; set; }

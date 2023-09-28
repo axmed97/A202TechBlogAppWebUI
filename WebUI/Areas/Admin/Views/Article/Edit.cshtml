@@ -1,20 +1,27 @@
 ﻿@model Article
 
 <form method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="@Model.UserId" />
+    <input type="hidden" asp-for="@Model.CreatedDate" />
+    <input type="hidden" asp-for="@Model.CreatedBy" />
+    <input type="hidden" asp-for="@Model.PhotoUrl" />
+    <input type="hidden" asp-for="@Model.Id" />
+    <input type="hidden" asp-for="@Model.ViewCount" />
     <div class="form-group">
         <label asp-for="Title"></label>
-        <input type="text" asp-for="Title" class="form-control" />
+        <input type="text" asp-for="Title"  class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Content"></label>
-        <textarea id="editor" type="text" asp-for="Content" class="form-control"></textarea>
+        <textarea id="editor" type="text" asp-for="Content"  class="form-control"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label for="photo">Photo</label>
         <input type="file" accept="image/*" id="photo" name="Photo" />
         <span asp-validation-for="PhotoUrl" class="text-danger"></span>
+        <img src="@Model.PhotoUrl" width="150" alt="" />
     </div>
     <div class="form-group">
         <select class="form-control" asp-for="CategoryId" asp-items="@ViewBag.Categories">
@@ -26,15 +33,34 @@
         <select multiple class="form-control" name="tagIds">
             @foreach (var item in ViewBag.Tags as List<Tag>)
             {
-                <option value="@item.Id">@item.TagName</option>
+                if(Model.ArticleTags.Select(x => x.TagId).Contains(item.Id))
+                {
+                    <option selected value="@item.Id">@item.TagName</option>
+                }else{
+                    <option value="@item.Id">@item.TagName</option>
+                }
             }
         </select>
-        @if(ViewBag.TagError != null)
+        @if (ViewBag.TagError != null)
         {
             <p class="text-danger">@ViewBag.TagError</p>
         }
     </div>
-    <input type="submit" class="btn btn-info" value="Create" />
+    @if(User.IsInRole("Admin") || User.IsInRole("Admin Editor"))
+    {
+        <div class="form-group">
+            <label asp-for="Status">Status</label>
+            <input type="checkbox" asp-for="Status" />
+        </div>
+    }
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="form-group">
+            <label asp-for="IsDeleted">Delete?</label>
+            <input type="checkbox" asp-for="IsDeleted" />
+        </div>
+    }
+    <input type="submit" class="btn btn-info" value="Update" />
 </form>
 
 @section Scripts{
