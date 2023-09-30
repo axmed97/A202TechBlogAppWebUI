@@ -34,6 +34,7 @@ namespace WebUI.Areas.Admin.Controllers
                 .ThenInclude(x => x.Tag)
                 .Include(x => x.User)
                 .Where(x => x.IsDeleted == false)
+                .OrderByDescending(x => x.CreatedDate)
                 .ToList();
             return View(articles);
         }
@@ -71,7 +72,7 @@ namespace WebUI.Areas.Admin.Controllers
                 var userId = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 article.UserId = userId;
                 var user = await _userManager.FindByIdAsync(userId);
-                article.CreatedBy = user.Email;
+                article.CreatedBy = user.Firstname;
                 article.ViewCount = 0;
                 article.SeoUrl = SeoHelper.ReplaceInvalidChars(article.Title);
 
@@ -148,7 +149,7 @@ namespace WebUI.Areas.Admin.Controllers
                 article.UpdatedDate = DateTime.Now;
                 var userId = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var user = await _userManager.FindByIdAsync(userId);
-                article.UpdatedBy = user.Email;
+                article.UpdatedBy = user.Firstname;
                 var articleTagDelete = _context.ArticleTags.Where(x => x.ArticleId == article.Id).ToList();
                 _context.ArticleTags.RemoveRange(articleTagDelete);
 

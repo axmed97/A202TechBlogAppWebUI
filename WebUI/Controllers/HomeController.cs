@@ -1,21 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using WebUI.Data;
 using WebUI.Models;
+using WebUI.ViewModels;
 
 namespace WebUI.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var featuredArticles = _context.Articles
+                .Include(x => x.Category)
+                .Where(x => x.IsFeatured == true
+            && x.Status == true && x.IsDeleted == false).OrderByDescending(x => x.UpdatedDate).Take(3).ToList();
+
+            var articles = _context.Articles
+                .Include(x => x.Category)
+                .Where(x => x.Status == true && x.IsDeleted == false)
+                .OrderByDescending(x => x.CreatedDate).ToList();
+            HomeVM homeVM = new()
+            {
+                FeaturedArticles = featuredArticles,
+                Articles = articles
+            };
+            return View(homeVM);
         }
 
         public IActionResult Privacy()
@@ -28,5 +48,7 @@ namespace WebUI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }

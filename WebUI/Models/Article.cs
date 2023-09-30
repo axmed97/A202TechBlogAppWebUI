@@ -9,6 +9,7 @@
         public int ViewCount { get; set; }
         public string SeoUrl { get; set; }
         public bool Status { get; set; }
+        public bool IsFeatured { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }

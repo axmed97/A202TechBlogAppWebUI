@@ -60,6 +60,13 @@
             <input type="checkbox" asp-for="IsDeleted" />
         </div>
     }
+    @if (User.IsInRole("Admin") || User.IsInRole("Admin Editor"))
+    {
+        <div class="form-group">
+            <label asp-for="IsFeatured">Featured</label>
+            <input type="checkbox" asp-for="IsFeatured" />
+        </div>
+    }
     <input type="submit" class="btn btn-info" value="Update" />
 </form>
 
