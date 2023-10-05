@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WebUI.Data;
+using WebUI.Helper;
 using WebUI.Models;
 using WebUI.ViewModels;
 
@@ -19,8 +20,23 @@ namespace WebUI.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int pg = 1)
         {
+
+            const int pageSize = 5;
+
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+
+            int articleCount = _context.Articles.Count();
+
+            var pager = new PageHelper(articleCount, pg, pageSize);
+
+            int artSkip = (pg - 1) * pageSize;
+            ViewBag.Pager = pager;
+
             var featuredArticles = _context.Articles
                 .Include(x => x.Category)
                 .Where(x => x.IsFeatured == true
@@ -29,6 +45,8 @@ namespace WebUI.Controllers
             var articles = _context.Articles
                 .Include(x => x.Category)
                 .Where(x => x.Status == true && x.IsDeleted == false)
+                .Skip(artSkip)
+                .Take(pager.PageSize)
                 .OrderByDescending(x => x.CreatedDate).ToList();
             HomeVM homeVM = new()
             {

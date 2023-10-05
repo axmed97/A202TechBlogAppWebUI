@@ -8,6 +8,10 @@ using WebUI.Data;
 using WebUI.Helper;
 using WebUI.Models;
 
+
+// SOLID - 
+// N-Layer/N-Tier
+// Onion
 namespace WebUI.Areas.Admin.Controllers
 {
     [Area(nameof(Admin))]

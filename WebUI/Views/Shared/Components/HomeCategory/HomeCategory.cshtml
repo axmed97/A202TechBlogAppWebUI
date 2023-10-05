@@ -1,0 +1,45 @@
+﻿@model List<Category>
+
+@{
+    int count = 0;
+}
+<div class="mega-menu-content clearfix">
+    <div class="tab">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <button class="tablinks @(i == 0 ? "active" : "")" onclick="openCategory(event, 'cat0@(i+1)')">@Model[i].CategoryName</button>
+
+        }
+    </div>
+
+    <div class="tab-details clearfix">
+        @foreach (var item in Model)
+        {
+            count++;
+
+            <div id="cat0@(count)" class="tabcontent @(count == 1 ? "active" : "")">
+                <div class="row">
+                    @foreach (var article in item.Articles.Take(4))
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="blog-box">
+                                <div class="post-media">
+                                    <a href="tech-single.html" title="">
+                                        <img src="@article.PhotoUrl" alt="" class="img-fluid">
+                                        <div class="hovereffect">
+                                        </div><!-- end hover -->
+                                        <span class="menucat">@item.CategoryName</span>
+                                    </a>
+                                </div><!-- end media -->
+                                <div class="blog-meta">
+                                    <h4><a href="tech-single.html" title="">@article.Title</a></h4>
+                                </div><!-- end meta -->
+                            </div><!-- end blog-box -->
+                        </div>
+                    }
+                </div><!-- end row -->
+            </div>
+        }
+
+    </div><!-- end tab-details -->
+</div>

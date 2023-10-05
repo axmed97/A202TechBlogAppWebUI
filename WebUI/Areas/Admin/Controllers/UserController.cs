@@ -74,7 +74,6 @@ namespace WebUI.Areas.Admin.Controllers
             return View(checkUser);
         }
 
-        
         public async Task<IActionResult> Delete(string userId, string role)
         {
             if (userId == null || role == null) return NotFound();

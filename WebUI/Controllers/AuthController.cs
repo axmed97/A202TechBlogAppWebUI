@@ -9,11 +9,13 @@ namespace WebUI.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor contextAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _contextAccessor = contextAccessor;
         }
 
         [HttpGet]
@@ -40,6 +42,16 @@ namespace WebUI.Controllers
 
             if (result.Succeeded)
             {
+                var controller = _contextAccessor.HttpContext.Request.Query["controller"];
+                var action = _contextAccessor.HttpContext.Request.Query["action"];
+                var id = _contextAccessor.HttpContext.Request.Query["id"];
+                var seoUrl = _contextAccessor.HttpContext.Request.Query["seoUrl"];
+                if (!string.IsNullOrEmpty(controller))
+                {
+                    return RedirectToAction(action, controller, new {Id = id, SeoUrl = seoUrl});
+                }
+
+
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -96,6 +108,13 @@ namespace WebUI.Controllers
                 return View();
             }
 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }
