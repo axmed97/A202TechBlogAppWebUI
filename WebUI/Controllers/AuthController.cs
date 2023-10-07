@@ -31,32 +31,40 @@ namespace WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
-            var checkEmail = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if(checkEmail is null)
+            try
             {
-                ModelState.AddModelError("Error", "Email or Password is incorrect!");
-                return View();
-            }
-
-            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(checkEmail.UserName, loginDTO.Password, loginDTO.RememberMe, true);
-
-            if (result.Succeeded)
-            {
-                var controller = _contextAccessor.HttpContext.Request.Query["controller"];
-                var action = _contextAccessor.HttpContext.Request.Query["action"];
-                var id = _contextAccessor.HttpContext.Request.Query["id"];
-                var seoUrl = _contextAccessor.HttpContext.Request.Query["seoUrl"];
-                if (!string.IsNullOrEmpty(controller))
+                var checkEmail = await _userManager.FindByEmailAsync(loginDTO.Email);
+                if (checkEmail is null)
                 {
-                    return RedirectToAction(action, controller, new {Id = id, SeoUrl = seoUrl});
+                    ModelState.AddModelError("Error", "Email or Password is incorrect!");
+                    return View();
                 }
 
+                Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(checkEmail.UserName, loginDTO.Password, loginDTO.RememberMe, true);
 
-                return RedirectToAction("Index", "Home");
+                if (result.Succeeded)
+                {
+                    var controller = _contextAccessor.HttpContext.Request.Query["controller"];
+                    var action = _contextAccessor.HttpContext.Request.Query["action"];
+                    var id = _contextAccessor.HttpContext.Request.Query["id"];
+                    var seoUrl = _contextAccessor.HttpContext.Request.Query["seoUrl"];
+                    if (!string.IsNullOrEmpty(controller))
+                    {
+                        return RedirectToAction(action, controller, new { Id = id, SeoUrl = seoUrl });
+                    }
+
+
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("Error", "Email or Password is incorrect!");
+                    return View();
+                }
             }
-            else
+            catch (Exception)
             {
-                ModelState.AddModelError("Error", "Email or Password is incorrect!");
+
                 return View();
             }
         }
@@ -76,35 +84,43 @@ namespace WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDTO registerDTO)
         {
-            var checkEmail = await _userManager.FindByEmailAsync(registerDTO.Email);
-            if(checkEmail is not null)
+            try
             {
-                ModelState.AddModelError("Error", "Email is already existed!");
-                return View();
-            }
-
-            User newUser = new()
-            {
-                Email = registerDTO.Email,
-                Firstname = registerDTO.Firstname,
-                Lastname = registerDTO.Lastname,
-                UserName = registerDTO.Email,
-                AboutAuthor = string.Empty,
-                PhotoUrl = "/"
-            };
-
-            var result = await _userManager.CreateAsync(newUser, registerDTO.Password);
-
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(Login));
-            }
-            else
-            {
-                foreach (var error in result.Errors)
+                var checkEmail = await _userManager.FindByEmailAsync(registerDTO.Email);
+                if (checkEmail is not null)
                 {
-                    ModelState.AddModelError("Error", error.Description);
+                    ModelState.AddModelError("Error", "Email is already existed!");
+                    return View();
                 }
+
+                User newUser = new()
+                {
+                    Email = registerDTO.Email,
+                    Firstname = registerDTO.Firstname,
+                    Lastname = registerDTO.Lastname,
+                    UserName = registerDTO.Email,
+                    AboutAuthor = string.Empty,
+                    PhotoUrl = "/"
+                };
+
+                var result = await _userManager.CreateAsync(newUser, registerDTO.Password);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Login));
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("Error", error.Description);
+                    }
+                    return View();
+                }
+            }
+            catch (Exception)
+            {
+
                 return View();
             }
 

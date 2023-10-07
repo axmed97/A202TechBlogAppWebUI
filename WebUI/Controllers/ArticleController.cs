@@ -68,7 +68,11 @@ namespace WebUI.Controllers
 
             var popularPosts = _context.Articles.OrderByDescending(x => x.ViewCount).Take(3).ToList();
 
-            var articleComments = _context.ArticleComments.Include(x => x.Article).Include(x => x.User).ToList();
+            var articleComments = _context.ArticleComments.Include(x => x.Article).Include(x => x.User)
+                .Where(x => x.ArticleId == article.Id).ToList();
+
+            var recentReviewsArticles = _context.ArticleComments
+                .Include(x => x.Article).OrderByDescending(x => x.PublishDate).Take(3).ToList();
 
 
             ArticleDetailVM articleDetailVM = new()
@@ -78,7 +82,8 @@ namespace WebUI.Controllers
                 NextArticle = next,
                 SimilarArticles = similarArticles,
                 PopularPosts = popularPosts,
-                ArticleComments = articleComments
+                ArticleComments = articleComments,
+                RecentReviewArticles = recentReviewsArticles
             };
 
             return View(articleDetailVM);
@@ -89,6 +94,7 @@ namespace WebUI.Controllers
         {
             try
             {
+                articleComment.ArticleId = articleId;
                 articleComment.PublishDate = DateTime.Now;
                 articleComment.UserId = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 await _context.ArticleComments.AddAsync(articleComment);
@@ -99,7 +105,20 @@ namespace WebUI.Controllers
             {
                 return RedirectToAction("Detail", new { Id = articleId,SeoUrl = seoUrl });
             }
-            
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteComment(int commentId, int articleId, string seoUrl)
+        {
+            var userId = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ViewBag.User = userId;
+            var articleComment = _context.ArticleComments.FirstOrDefault(x => x.Id == commentId);
+            if(User.IsInRole("Admin") || articleComment.UserId == userId)
+            {
+                _context.ArticleComments.Remove(articleComment);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Detail", new { Id = articleId, SeoUrl = seoUrl });
         }
     }
 }

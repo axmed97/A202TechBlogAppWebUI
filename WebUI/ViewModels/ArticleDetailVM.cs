@@ -10,5 +10,6 @@ namespace WebUI.ViewModels
         public List<Article> SimilarArticles { get; set; }
         public List<Article> PopularPosts { get; set; }
         public List<ArticleComment> ArticleComments { get; set; }
+        public List<ArticleComment> RecentReviewArticles { get; set; }
     }
 }
